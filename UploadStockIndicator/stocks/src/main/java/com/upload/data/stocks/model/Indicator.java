@@ -2,43 +2,56 @@ package com.upload.data.stocks.model;
 
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 
 @Entity
 @Data
+
 public class Indicator {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idProduct;
-    private String code;
-    private String region;
-    private String mounth;
-    private String name;
-    private String type;
-    private String year;
-    private String value;
-    private String currency;
-    private String attribute;
+    private int idStockIndicators;
 
-    public Indicator() {
-    }
+    @Column(name = "TICKER")
+    private String ticker;
+    @Column(name = "INDICATOR")
+    private String indicatorName;
+    @Column(name = "PER")
+    private String per;
+    @Column(name = "DATE")
+    private Date date;
+    @Column(name = "TIME")
+    private String time;
+    @Column(name = "OPEN")
+    private BigDecimal open;
+    @Column(name = "HIGH")
+    private BigDecimal high;
+    @Column(name = "LOW")
+    private BigDecimal low;
+    @Column(name = "CLOSE")
+    private BigDecimal close;
+    @Column(name = "VOL")
+    private BigDecimal vol;
+    @Column(name = "OPENINT")
+    private BigDecimal openint;
 
-    public Indicator(int id, String code, String region, String mounth, String name, String type, String year, String value, String currency, String attribute) {
-        this.idProduct = id;
-        this.code = code;
-        this.region = region;
-        this.mounth = mounth;
-        this.name = name;
-        this.type = type;
-        this.year = year;
-        this.value = value;
-        this.currency = currency;
-        this.attribute = attribute;
+    public Indicator(IndicatorCSV indicatorCSV){
+        this.ticker = indicatorCSV.getTicker();
+        this.indicatorName = indicatorCSV.getIndicatorName();
+        this.per = indicatorCSV.getPer();
+        this.date = indicatorCSV.getDate();
+        this.time = indicatorCSV.getTime();
+        this.open = indicatorCSV.getOpen();
+        this.high = indicatorCSV.getHigh();
+        this.low = indicatorCSV.getLow();
+        this.close = indicatorCSV.getClose();
+        this.vol = indicatorCSV.getVol();
+        this.openint = indicatorCSV.getOpenint();
     }
 }

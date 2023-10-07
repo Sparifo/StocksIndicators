@@ -1,7 +1,8 @@
 package com.upload.data.stocks.controller;
 
 import com.upload.data.stocks.model.Indicator;
-import com.upload.data.stocks.repository.ProductRepository;
+import com.upload.data.stocks.model.IndicatorCSV;
+import com.upload.data.stocks.repository.IndicatorRepository;
 import com.upload.data.stocks.service.ImportCSV;
 import com.upload.data.stocks.service.ReadCSV;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,21 +26,19 @@ public class UploadIndicatorsController {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadIndicatorsController.class);
 
-    private ApplicationEventPublisher eventPublisher;
     private ImportCSV importCSV;
-    private ReadCSV readXlsx;
+    private ReadCSV readCSV;
 
-    private ProductRepository productRepository;
+    private IndicatorRepository indicatorRepository;
 
     @Value("${director.to.check}")
     private String directorToCheck;
 
     @Autowired
-    public UploadIndicatorsController(ApplicationEventPublisher eventPublisher, ImportCSV importCSV, ReadCSV readXlsx, ProductRepository productRepository) {
-        this.eventPublisher = eventPublisher;
+    public UploadIndicatorsController(ImportCSV importCSV, ReadCSV readCSV, IndicatorRepository indicatorRepository) {
         this.importCSV = importCSV;
-        this.readXlsx = readXlsx;
-        this.productRepository = productRepository;
+        this.readCSV = readCSV;
+        this.indicatorRepository = indicatorRepository;
     }
 
     public UploadIndicatorsController() {
@@ -48,21 +46,21 @@ public class UploadIndicatorsController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity getImportXslx(final HttpServletResponse response) {
+    public ResponseEntity getImportCSV(final HttpServletResponse response) {
 
-        Optional<List<File>> fileXlsxOptional = importCSV.checkFileExist(directorToCheck);
+        Optional<List<File>> fileCSVOptional = importCSV.checkFileExist(directorToCheck);
 
-        if(fileXlsxOptional.isPresent()){
+        if(fileCSVOptional.isPresent()){
 
-            List<File> fileXls = (List<File>)fileXlsxOptional.get();
+            List<File> fileCSV = fileCSVOptional.get();
 
-            List<Indicator> indicators = new ArrayList<>();
-            for(File xsl : fileXls) {
-                indicators.addAll(readXlsx.readFile(xsl.getAbsolutePath()));
+            List<ImportCSV> indicators = new ArrayList<>();
+            for(File csv : fileCSV) {
+                indicators.addAll(readCSV.readFile(csv.getAbsolutePath()));
                 logger.info("END OD FILE");
             }
 
-            productRepository.saveAll(indicators);
+//            indicatorRepository.saveAll(indicators);
 
             logger.info("END OD WORK");
             return ResponseEntity.ok()
