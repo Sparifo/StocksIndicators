@@ -5,6 +5,7 @@ import com.upload.data.stocks.model.IndicatorCSV;
 import com.upload.data.stocks.repository.IndicatorRepository;
 import com.upload.data.stocks.service.ImportCSV;
 import com.upload.data.stocks.service.ReadCSV;
+import com.upload.data.stocks.service.ReadXlsx;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +29,18 @@ public class UploadIndicatorsController {
 
     private ImportCSV importCSV;
     private ReadCSV readCSV;
-
+    private ReadXlsx readXlsx;
     private IndicatorRepository indicatorRepository;
 
     @Value("${director.to.check}")
     private String directorToCheck;
 
     @Autowired
-    public UploadIndicatorsController(ImportCSV importCSV, ReadCSV readCSV, IndicatorRepository indicatorRepository) {
+    public UploadIndicatorsController(ImportCSV importCSV, ReadCSV readCSV, IndicatorRepository indicatorRepository, ReadXlsx readXlsx) {
         this.importCSV = importCSV;
         this.readCSV = readCSV;
         this.indicatorRepository = indicatorRepository;
+        this.readXlsx = readXlsx;
     }
 
     public UploadIndicatorsController() {
@@ -52,11 +54,17 @@ public class UploadIndicatorsController {
 
         if(fileCSVOptional.isPresent()){
 
-            List<File> fileCSV = fileCSVOptional.get();
+            List<File> files= fileCSVOptional.get();
 
-            List<ImportCSV> indicators = new ArrayList<>();
-            for(File csv : fileCSV) {
-                indicators.addAll(readCSV.readFile(csv.getAbsolutePath()));
+//            List<IndicatorCSV> indicators = new ArrayList<>();
+//            for(File csv : fileCSV) {
+//                indicators.addAll(readCSV.readFile(csv.getAbsolutePath()));
+//                logger.info("END OD FILE");
+//            }
+
+            List<Indicator> indicators = new ArrayList<>();
+            for(File file : files) {
+                indicators.addAll(readXlsx.readFile(file.getAbsolutePath()));
                 logger.info("END OD FILE");
             }
 

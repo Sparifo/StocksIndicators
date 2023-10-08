@@ -1,7 +1,7 @@
 package com.upload.data.stocks.service;
 
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.upload.data.stocks.controller.UploadIndicatorsController;
+import com.upload.data.stocks.model.Indicator;
 import com.upload.data.stocks.model.IndicatorCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +15,9 @@ public class ReadCSV {
 
     private static final Logger logger = LoggerFactory.getLogger(ReadCSV.class);
 
-    public Collection<? extends ImportCSV> readFile(String fileLocation){
+    public List<Indicator> readFile(String fileLocation){
         try {
-            List<ImportCSV> indicators = new CsvToBeanBuilder(new FileReader(fileLocation))
+            List<Indicator> indicators = new CsvToBeanBuilder(new FileReader(fileLocation))
                     .withType(ImportCSV.class)
                     .build()
                     .parse();
