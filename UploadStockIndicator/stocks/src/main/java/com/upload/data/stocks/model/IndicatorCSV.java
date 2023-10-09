@@ -16,7 +16,7 @@ public class IndicatorCSV {
     @CsvBindByPosition(position = 1)
     private String per;
     @CsvBindByPosition(position = 2)
-    private Date date;
+    private String date;
     @CsvBindByPosition(position = 3)
     private String time;
     @CsvBindByPosition(position = 4)

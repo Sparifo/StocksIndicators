@@ -8,7 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 @Entity
@@ -44,11 +47,12 @@ public class Indicator {
     @Column(name = "OPENINT")
     private BigDecimal openint;
 
-    public Indicator(IndicatorCSV indicatorCSV){
+    public Indicator(IndicatorCSV indicatorCSV) throws ParseException {
         this.ticker = indicatorCSV.getTicker();
         this.indicatorName = indicatorCSV.getIndicatorName();
         this.per = indicatorCSV.getPer();
-        this.date = indicatorCSV.getDate();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd", Locale.ENGLISH);
+        this.date = formatter.parse(indicatorCSV.getDate());
         this.time = indicatorCSV.getTime();
         this.open = indicatorCSV.getOpen();
         this.high = indicatorCSV.getHigh();

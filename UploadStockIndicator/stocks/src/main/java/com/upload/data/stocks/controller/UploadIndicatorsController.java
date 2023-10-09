@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +49,7 @@ public class UploadIndicatorsController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity getImportCSV(final HttpServletResponse response) {
+    public ResponseEntity getImportCSV(final HttpServletResponse response)  {
 
         Optional<List<File>> fileCSVOptional = importCSV.checkFileExist(directorToCheck);
 
@@ -56,23 +57,30 @@ public class UploadIndicatorsController {
 
             List<File> files= fileCSVOptional.get();
 
-//            List<IndicatorCSV> indicators = new ArrayList<>();
-//            for(File csv : fileCSV) {
-//                indicators.addAll(readCSV.readFile(csv.getAbsolutePath()));
-//                logger.info("END OD FILE");
-//            }
-
             List<Indicator> indicators = new ArrayList<>();
-            for(File file : files) {
-                indicators.addAll(readXlsx.readFile(file.getAbsolutePath()));
-                logger.info("END OD FILE");
-            }
 
-//            indicatorRepository.saveAll(indicators);
+            for(File csv : files) {
+
+                for(IndicatorCSV indicatorCSV : readCSV.readFile(csv.getAbsolutePath())) {
+
+                    String[] nameAndIndicator = indicatorCSV.getTicker().split("_");
+
+                    try {
+                        Indicator indicatorTemp = new Indicator(indicatorCSV);
+                        indicatorTemp.setTicker(nameAndIndicator[0]);
+                        indicatorTemp.setIndicatorName(nameAndIndicator[1]);
+                        indicators.add(indicatorTemp);
+                        logger.info("END OD FILE");
+                    } catch (ParseException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+            indicatorRepository.saveAll(indicators);
 
             logger.info("END OD WORK");
             return ResponseEntity.ok()
-                    .body("Work");
+                    .body("Data has been imported");
         }else{
             return ResponseEntity.badRequest()
                     .body("Directory is empty");
