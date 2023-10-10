@@ -1,0 +1,17 @@
+# Użyj oficjalnego obrazu OpenJDK 17 jako bazowego obrazu
+FROM openjdk:17
+
+# Ustal katalog roboczy w kontenerze
+WORKDIR /app
+
+# Skopiuj pliki aplikacji do kontenera
+COPY . /app
+
+# Zbuduj aplikację Spring Boot
+RUN ./gradlew build
+
+# Domyślny port, na którym działa aplikacja
+EXPOSE 8081
+
+# Komenda do uruchomienia aplikacji Spring Boot w kontenerze
+CMD ["java", "-jar", "target/your-spring-boot-app.jar"]

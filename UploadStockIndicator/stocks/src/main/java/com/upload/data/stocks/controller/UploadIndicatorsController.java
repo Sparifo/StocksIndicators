@@ -76,7 +76,11 @@ public class UploadIndicatorsController {
                     }
                 }
             }
-            indicatorRepository.saveAll(indicators);
+            for(Indicator a : indicators){
+                logger.info("Insert: "+a.getTicker() +"_"+ a.getDate());
+                indicatorRepository.save(a);
+            }
+//            indicatorRepository.saveAll(indicators);
 
             logger.info("END OD WORK");
             return ResponseEntity.ok()
