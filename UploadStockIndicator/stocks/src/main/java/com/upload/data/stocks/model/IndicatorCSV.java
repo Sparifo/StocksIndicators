@@ -12,24 +12,25 @@ public class IndicatorCSV {
 
     @CsvBindByPosition(position = 0)
     private String ticker;
-    private String indicatorName;
     @CsvBindByPosition(position = 1)
-    private String per;
+    private String indicatorName;
     @CsvBindByPosition(position = 2)
-    private String date;
+    private String per;
     @CsvBindByPosition(position = 3)
-    private String time;
+    private String date;
     @CsvBindByPosition(position = 4)
-    private BigDecimal open;
+    private String time;
     @CsvBindByPosition(position = 5)
-    private BigDecimal high;
+    private BigDecimal open;
     @CsvBindByPosition(position = 6)
-    private BigDecimal low;
+    private BigDecimal high;
     @CsvBindByPosition(position = 7)
-    private BigDecimal close;
+    private BigDecimal low;
     @CsvBindByPosition(position = 8)
-    private BigDecimal vol;
+    private BigDecimal close;
     @CsvBindByPosition(position = 9)
+    private BigDecimal vol;
+    @CsvBindByPosition(position = 10)
     private BigDecimal openint;
 
 }

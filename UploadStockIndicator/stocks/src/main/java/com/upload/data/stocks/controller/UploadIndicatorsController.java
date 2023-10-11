@@ -30,18 +30,18 @@ public class UploadIndicatorsController {
 
     private ImportCSV importCSV;
     private ReadCSV readCSV;
-    private ReadXlsx readXlsx;
+    //    private ReadXlsx readXlsx;
     private IndicatorRepository indicatorRepository;
 
     @Value("${director.to.check}")
     private String directorToCheck;
 
     @Autowired
-    public UploadIndicatorsController(ImportCSV importCSV, ReadCSV readCSV, IndicatorRepository indicatorRepository, ReadXlsx readXlsx) {
+    public UploadIndicatorsController(ImportCSV importCSV, ReadCSV readCSV, IndicatorRepository indicatorRepository) {
         this.importCSV = importCSV;
         this.readCSV = readCSV;
         this.indicatorRepository = indicatorRepository;
-        this.readXlsx = readXlsx;
+//        this.readXlsx = readXlsx;
     }
 
     public UploadIndicatorsController() {
@@ -49,26 +49,26 @@ public class UploadIndicatorsController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity getImportCSV(final HttpServletResponse response)  {
+    public ResponseEntity getImportCSV(final HttpServletResponse response) {
 
         Optional<List<File>> fileCSVOptional = importCSV.checkFileExist(directorToCheck);
 
-        if(fileCSVOptional.isPresent()){
+        if (fileCSVOptional.isPresent()) {
 
-            List<File> files= fileCSVOptional.get();
+            List<File> files = fileCSVOptional.get();
 
             List<Indicator> indicators = new ArrayList<>();
 
-            for(File csv : files) {
+            for (File csv : files) {
 
-                for(IndicatorCSV indicatorCSV : readCSV.readFile(csv.getAbsolutePath())) {
+                for (IndicatorCSV indicatorCSV : readCSV.readFile(csv.getAbsolutePath())) {
 
-                    String[] nameAndIndicator = indicatorCSV.getTicker().split("_");
+//                    String[] nameAndIndicator = indicatorCSV.getTicker().split("_");
 
                     try {
                         Indicator indicatorTemp = new Indicator(indicatorCSV);
-                        indicatorTemp.setTicker(nameAndIndicator[0]);
-                        indicatorTemp.setIndicatorName(nameAndIndicator[1]);
+//                        indicatorTemp.setTicker(nameAndIndicator[0]);
+//                        indicatorTemp.setIndicatorName(nameAndIndicator[1]);
                         indicators.add(indicatorTemp);
                         logger.info("END OD FILE");
                     } catch (ParseException e) {
@@ -76,8 +76,8 @@ public class UploadIndicatorsController {
                     }
                 }
             }
-            for(Indicator a : indicators){
-                logger.info("Insert: "+a.getTicker() +"_"+ a.getDate());
+            for (Indicator a : indicators) {
+                logger.info("Insert: " + a.getTicker() + "_" + a.getDate());
                 indicatorRepository.save(a);
             }
 //            indicatorRepository.saveAll(indicators);
@@ -85,7 +85,7 @@ public class UploadIndicatorsController {
             logger.info("END OD WORK");
             return ResponseEntity.ok()
                     .body("Data has been imported");
-        }else{
+        } else {
             return ResponseEntity.badRequest()
                     .body("Directory is empty");
         }
