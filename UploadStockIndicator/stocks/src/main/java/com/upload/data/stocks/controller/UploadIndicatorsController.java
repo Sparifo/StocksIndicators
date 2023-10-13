@@ -62,27 +62,18 @@ public class UploadIndicatorsController {
             for (File csv : files) {
 
                 for (IndicatorCSV indicatorCSV : readCSV.readFile(csv.getAbsolutePath())) {
-
-//                    String[] nameAndIndicator = indicatorCSV.getTicker().split("_");
-
                     try {
                         Indicator indicatorTemp = new Indicator(indicatorCSV);
-//                        indicatorTemp.setTicker(nameAndIndicator[0]);
-//                        indicatorTemp.setIndicatorName(nameAndIndicator[1]);
-                        indicators.add(indicatorTemp);
+                        logger.info("Insert: " + indicatorTemp.getTicker() + "_" +indicatorTemp.getDate());
+                        indicatorRepository.save(indicatorTemp);
                         logger.info("END OD FILE");
                     } catch (ParseException e) {
                         logger.error(e.getMessage(), e);
                     }
                 }
             }
-            for (Indicator a : indicators) {
-                logger.info("Insert: " + a.getTicker() + "_" + a.getDate());
-                indicatorRepository.save(a);
-            }
-//            indicatorRepository.saveAll(indicators);
 
-            logger.info("END OD WORK");
+            logger.info("END OF WORK");
             return ResponseEntity.ok()
                     .body("Data has been imported");
         } else {
