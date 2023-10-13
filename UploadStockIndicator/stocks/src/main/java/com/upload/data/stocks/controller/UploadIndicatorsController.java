@@ -66,7 +66,7 @@ public class UploadIndicatorsController {
                         Indicator indicatorTemp = new Indicator(indicatorCSV);
                         logger.info("Insert: " + indicatorTemp.getTicker() + "_" +indicatorTemp.getDate());
                         indicatorRepository.save(indicatorTemp);
-                        logger.info("END OD FILE");
+                        logger.info("END OF FILE");
                     } catch (ParseException e) {
                         logger.error(e.getMessage(), e);
                     }
