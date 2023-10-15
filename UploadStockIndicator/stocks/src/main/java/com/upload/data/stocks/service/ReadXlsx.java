@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -26,17 +25,17 @@ public class ReadXlsx {
         FileInputStream file = null;
         try {
             file = new FileInputStream(new File(fileLocation));
-            Workbook workbook = new XSSFWorkbook(file);
-
-            Sheet sheet = workbook.getSheetAt(1);
-
+            Sheet sheet;
+            try(Workbook workbook = new XSSFWorkbook(file);) {
+                sheet = workbook.getSheetAt(1);
+            }
             Map<Integer, List<String>> data = new HashMap<>();
             List<Indicator> products = new ArrayList<>();
             int i = 0;
             boolean missFirstRow=true;
             for (Row row : sheet) {
                 if(!missFirstRow) {
-                    data.put(i, new ArrayList<String>());
+                    data.put(i, new ArrayList<>());
                     int a = 0;
                     Indicator indicator = new Indicator();
                     fillProduct(row, a, indicator);
@@ -48,10 +47,9 @@ public class ReadXlsx {
             }
 
         return products;
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        }catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            return new ArrayList<>();
         }
     }
 
@@ -91,6 +89,8 @@ public class ReadXlsx {
                 case 9:
                     indicator.setOpenint(new BigDecimal(getValueFromCell(cell)));
                     break;
+                default:
+                    logger.info("Brak pasujacego miejsca danych: {}", getValueFromCell(cell));
             }
 
             a++;

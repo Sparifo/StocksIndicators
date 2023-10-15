@@ -5,7 +5,6 @@ import com.upload.data.stocks.model.IndicatorCSV;
 import com.upload.data.stocks.repository.IndicatorRepository;
 import com.upload.data.stocks.service.ImportCSV;
 import com.upload.data.stocks.service.ReadCSV;
-import com.upload.data.stocks.service.ReadXlsx;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +28,6 @@ public class UploadIndicatorsController {
 
     private ImportCSV importCSV;
     private ReadCSV readCSV;
-    //    private ReadXlsx readXlsx;
     private IndicatorRepository indicatorRepository;
 
     @Value("${director.to.check}")
@@ -41,7 +38,6 @@ public class UploadIndicatorsController {
         this.importCSV = importCSV;
         this.readCSV = readCSV;
         this.indicatorRepository = indicatorRepository;
-//        this.readXlsx = readXlsx;
     }
 
     public UploadIndicatorsController() {
@@ -57,14 +53,12 @@ public class UploadIndicatorsController {
 
             List<File> files = fileCSVOptional.get();
 
-            List<Indicator> indicators = new ArrayList<>();
-
             for (File csv : files) {
 
                 for (IndicatorCSV indicatorCSV : readCSV.readFile(csv.getAbsolutePath())) {
                     try {
                         Indicator indicatorTemp = new Indicator(indicatorCSV);
-                        logger.info("Insert: " + indicatorTemp.getTicker() + "_" +indicatorTemp.getDate());
+                        logger.info("Insert: {} _ {}", indicatorTemp.getTicker(), indicatorTemp.getDate());
                         indicatorRepository.save(indicatorTemp);
                         logger.info("END OF FILE");
                     } catch (ParseException e) {

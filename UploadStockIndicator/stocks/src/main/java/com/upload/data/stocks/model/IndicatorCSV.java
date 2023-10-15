@@ -1,11 +1,9 @@
 package com.upload.data.stocks.model;
 
 import com.opencsv.bean.CsvBindByPosition;
-import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
 public class IndicatorCSV {

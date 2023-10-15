@@ -22,12 +22,9 @@ public class ReadCSV {
                     .withSkipLines(1)
                     .build()
                     .parse();
-
-//            indicators.forEach(name -> logger.info(name.toString()));
-
-            return indicators;
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            logger.error(e.getMessage(), e);
         }
+        return null;
     }
 }
